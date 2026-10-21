@@ -7,6 +7,10 @@ pipeline {
         githubPush()
     }
 
+    environment {
+        PYTHON = 'C:\Users\jaini\AppData\Local\Programs\Python\Python312\python.exe'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -15,19 +19,19 @@ pipeline {
         }
         stage('Install') {
             steps {
-                bat 'python -m pip install -r requirements.txt'
+                bat '"%PYTHON%" -m pip install -r requirements.txt'
             }
         }
         stage('Test') {
             steps {
-                bat 'python -m pytest --junitxml=report.xml'
+                bat '"%PYTHON%" -m pytest --junitxml=report.xml'
             }
         }
     }
 
     post {
         always {
-            junit 'report.xml'
+            junit allowEmptyResults: true, testResults: 'report.xml'
         }
     }
 }
